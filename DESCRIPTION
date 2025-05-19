@@ -9,10 +9,10 @@ Description: Describes how to create an S7 classe. It shows
     Aimed for developers who want to re-use existing Bioconductor
     classes.
 Depends:
-    S7
-Imports:
-    BiocGenerics,
+    S7,
     S4Vectors
+Imports:
+    BiocGenerics
 License: Artistic-2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
