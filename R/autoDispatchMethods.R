@@ -78,6 +78,8 @@ dispatch_all_methods_S4_to_S7 <- function(s4_class, s7_class, skip = c()) {
     method_names <- setdiff(method_names, c(skip, "coerce", "names<-", "initialize"))
     skipped_methods <- character(0)
     for (meth in method_names) {
+        # some methods give error because they are not generics or an extension
+        # of a base method. Needs some adjustment
         tryCatch(
             auto_delegate_method(meth, s7_class),
             error = function(e) skipped_methods <<- c(skipped_methods, meth)
@@ -98,16 +100,21 @@ MyIRangesS7 <- new_class(
     "MyIRangesS7",
     properties = list(parent = class_any)
 )
-S4_register(MyIRangesS7)
+S4_register(MyIRangesS7) #required by S7
 
 dispatch_all_methods_S4_to_S7("IRanges", MyIRangesS7, skip = c("width", "end")) # width/end a mano sotto
 
 # Test
 ir <- IRanges(start = c(1,5,10), width = 3)
+
 obj <- MyIRangesS7(parent = ir)
 length(obj)        # 3
 start(obj)         # 1 5 10
 end(obj)           # 3 7 12
 width(obj)         # 3 3 3
 as.data.frame(obj) # dataframe of ranges
+
+start(ir) <- c(2,3,5) # working
+start(obj) <- c(2,3,5) # not working
+
 
